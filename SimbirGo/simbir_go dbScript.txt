@@ -1,0 +1,81 @@
+create table account
+(
+	account_id serial primary key,
+	username varchar(50) unique not null,
+	"password" varchar(50) not null,
+	is_admin bool not null,
+	balance double precision not null
+);
+
+insert into account (username, password, is_admin, balance) values ('admin', 'ISMvKXpXpadDiUoOSoAfww==', true, 0);
+
+create table users_sessions
+(
+	users_sessions_id serial primary key,
+	account_id int references account NOT NULL,
+	valid_session bool
+);
+
+create table transport_type
+(
+	transport_type_id serial primary key,
+	"name" varchar(50) unique not null
+);
+
+insert into transport_type (name) values ('Car');
+insert into transport_type (name) values ('Bike');
+insert into transport_type (name) values ('Scooter');
+
+create table transport_model
+(
+	transport_model_id serial primary key,
+	"name" varchar(50) unique not null,
+	transport_type_id int references transport_type
+);
+
+create table color
+(
+	color_id serial primary key,
+	"name" varchar(50) unique not null
+);
+
+create table transport
+(
+	transport_id serial primary key,
+	owner_id int references account,
+	can_be_rented bool unique not null,
+	transport_model_id  int references transport_model,
+	color_id int references color,
+	identifier varchar(9) unique not null,
+	description varchar(300) null,
+	latitude double precision not null,
+	longitude double precision not null
+);
+
+create table price_type
+(
+	price_type_id serial primary key,
+	"name" varchar(75) not null
+);
+
+insert into price_type (name) values ('Minutes');
+insert into price_type (name) values ('Days');
+
+create table transport_price_type
+(
+	transport_price_type_id serial primary key,
+	transport_id int references transport,
+	price_type_id int references price_type,
+	price double precision not null
+);
+
+create table rent
+(
+	rent_id serial primary key,
+	account_id int references account,
+	time_start timestamptz not null,
+	time_end timestamptz null,
+	price_of_unit double precision not null,
+	transport_price_type_id  int references transport_price_type,
+	final_price double precision null
+);
