@@ -43,8 +43,8 @@ create table transport
 (
 	transport_id serial primary key,
 	owner_id int references account,
-	can_be_rented bool unique not null,
-	transport_model_id  int references transport_model,
+	can_be_rented bool not null,
+	transport_model_id int references transport_model,
 	color_id int references color,
 	identifier varchar(9) unique not null,
 	description varchar(300) null,
